@@ -30,7 +30,7 @@ async function seedUsers() {
     // Guardar usuarios en DB
     await User.create(usuarios);
 
-    console.log("Usuarios creados correctamente con contraseñas encriptadas");
+    console.log("Usuarios creados correctamente con contraseñas encriptadas corectamente");
     process.exit();
   } catch (error) {
     console.error(error);
