@@ -9,6 +9,14 @@ app.use(cors());
 app.use(express.json());
 app.use("/images", express.static("public/images"));
 
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'API Sega backend corriendo' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, status: 'ok' });
+});
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Mongo conectado"))
   .catch(err => console.log(err));
@@ -22,6 +30,13 @@ app.use('/api/tareas', require('./routes/tareas.routes'));
 const errorMiddleware = require("./middlewares/errorMiddleware");
 app.use(errorMiddleware);
 
-app.listen(3000, () => {
-  console.log("Servidor en http://localhost:3000");
+// Comprobar variables críticas
+if (!process.env.JWT_SECRET) {
+  console.error('Falta la variable de entorno JWT_SECRET. Define en .env');
+  process.exit(1);
+}
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor en http://localhost:${PORT}`);
 });

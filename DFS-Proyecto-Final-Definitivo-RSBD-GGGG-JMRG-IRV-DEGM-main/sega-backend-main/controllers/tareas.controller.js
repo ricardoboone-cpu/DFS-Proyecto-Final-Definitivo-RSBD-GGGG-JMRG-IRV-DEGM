@@ -101,6 +101,12 @@ exports.updateTarea = async (req, res, next) => {
         const index = tareas.findIndex(t => t.id === id);
         if (index === -1) return res.status(404).json({ msg: "No encontrada" });
 
+        const esAdmin = req.user.role === "admin";
+        const esAsignadaAlUsuario = tareas[index].asignadaA === req.user.username;
+        if (!esAdmin && !esAsignadaAlUsuario) {
+            return res.status(403).json({ msg: "No autorizado para actualizar esta tarea" });
+        }
+
         tareas[index] = { ...tareas[index], titulo, descripcion };
 
         await fs.writeFile(filePath, JSON.stringify(tareas, null, 2));
